@@ -51,7 +51,7 @@ void roomba_moter_stop(){  //モーターを止める
 };
 
 
-void roomba_drive_turn_counterclockwise(int num){ //反時計回り 引数は速さ
+void roomba_drive_turn_counterclockwise(int num) {
     Roomba.write(137);
     roomba_send_num(num);  //Velocity 100mm/s
     roomba_send_num(1);  //Radius 1
@@ -59,7 +59,7 @@ void roomba_drive_turn_counterclockwise(int num){ //反時計回り 引数は速
 };
 
 
-void roomba_drive_turn_clockwise(int num){ //時計回り 引数は速さ
+void roomba_drive_turn_clockwise(int num) { 
     Roomba.write(137);
     roomba_send_num(num);  //Velocity 
     roomba_send_num(-1);  //Radius 
@@ -95,9 +95,18 @@ void setup() {
 
 void loop() {
     M5.update();
-    M5.Lcd.fillScreen(BLACK);
-    M5.Lcd.setCursor(10, 70);
     M5.Lcd.setTextSize(5);
+    M5.Lcd.fillScreen(BLACK);
+
+    if (M5.BtnA.wasPressed() && v > 0) {
+        v -= 50;
+    } else if (M5.BtnC.wasPressed() && v <= 200) {
+        v += 50;
+    } 
+
+    M5.Lcd.setCursor(10, 10);
+    M5.Lcd.printf("v = %d", v);
+    M5.Lcd.setCursor(10, 70);
 
     switch (buf[0]) {
         case 'A':
