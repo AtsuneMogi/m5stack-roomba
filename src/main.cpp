@@ -46,7 +46,7 @@ void roomba_drive(int right,int left) { // go advance
 void roomba_moter_stop(){  //モーターを止める
     Roomba.write(137);
     roomba_send_num(0);  //Velocity 0mm/s
-    roomba_send_num(0);  //Radius  0  速度が0なのでなんでも良い
+    roomba_send_num(0);  //Radius
     delay(100);
 };
 
@@ -98,9 +98,9 @@ void loop() {
     M5.Lcd.setTextSize(5);
     M5.Lcd.fillScreen(BLACK);
 
-    if (M5.BtnA.wasPressed() && v > 0) {
+    if (M5.BtnA.wasPressed() && 0 < v) { // min: 0
         v -= 50;
-    } else if (M5.BtnC.wasPressed() && v <= 200) {
+    } else if (M5.BtnC.wasPressed() && v < 250) { // max: 250
         v += 50;
     } 
 
@@ -110,12 +110,12 @@ void loop() {
 
     switch (buf[0]) {
         case 'A':
-            roomba_drive(v, v); //go advance
             M5.Lcd.println("Forward");
+            roomba_drive(v, v); //go advance
             break;
         case 'B':
-            roomba_drive(-v, -v);//go back
             M5.Lcd.println("Back");
+            roomba_drive(-v, -v); //go back
             break;
         case 'C':
             //left_shift(0,200,0,200);
@@ -130,28 +130,28 @@ void loop() {
             //right_shift(0,200,0, 200);
             break;
         case 'G':
-            roomba_drive(v, v/2); // left shift
             M5.Lcd.println("Turn left");
+            roomba_drive(v, v/2); // left shift
             break;
         case 'H':
-            roomba_drive(v/2, v);
             M5.Lcd.println("Turn right");
+            roomba_drive(v/2, v);
             break;
         case 'I':
-            roomba_drive_turn_clockwise(v); // right turn
             M5.Lcd.println("Clockwise");
+            roomba_drive_turn_clockwise(v); // turn clockwise
             break;
         case 'J':
-            roomba_drive_turn_counterclockwise(v); // left turn
             M5.Lcd.println("Counterclockwise");
+            roomba_drive_turn_counterclockwise(v); // turn counterclockwise
             break;
         case 'K':
-            roomba_drive(0, 0);
             M5.Lcd.println("Stop");
+            roomba_drive(0, 0);
             break;
         default:
             break;
     }
     
-    delay(150);
+    delay(100);
 }
