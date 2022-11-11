@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <WiFi.h>
 
+
 char ssid[] = "M5StickC-Plus-Controller";
 char pass[] = "controller"; 
 // use a ring buffer to increase speed and reduce memory allocation
