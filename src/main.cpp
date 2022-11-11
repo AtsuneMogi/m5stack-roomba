@@ -147,7 +147,7 @@ void loop() {
             break;
         case 'K':
             M5.Lcd.println("Stop");
-            roomba_drive(0, 0);
+            roomba_moter_stop();
             break;
         default:
             break;
