@@ -119,32 +119,32 @@ void loop() {
             roomba_drive(-v, -v); //go back
             break;
         case 'C':
-            //left_shift(0,200,0,200);
+            M5.Lcd.println("Left Forward");
+            roomba_drive(v, v/5);
             break;
         case 'D':
-            //right_shift(200,0,200,0);
+            M5.Lcd.println("Right Forward");
+            roomba_drive(v/5, v);
             break;
         case 'E':
-            //left_shift(200,0,200,0);
+            M5.Lcd.println("Left Back");
+            roomba_drive(-v, -v/5);
             break;
         case 'F':
-            //right_shift(0,200,0, 200);
+            M5.Lcd.println("Right Back");
+            roomba_drive(-v/5, -v);
             break;
         case 'G':
-            M5.Lcd.println("Turn left");
-            roomba_drive(v, v/2); // left shift
+            M5.Lcd.println("Counterclockwise");
+            roomba_drive_turn_counterclockwise(v); // turn counterclockwise
             break;
         case 'H':
-            M5.Lcd.println("Turn right");
-            roomba_drive(v/2, v);
-            break;
-        case 'I':
             M5.Lcd.println("Clockwise");
             roomba_drive_turn_clockwise(v); // turn clockwise
             break;
+        case 'I':
+            break;
         case 'J':
-            M5.Lcd.println("Counterclockwise");
-            roomba_drive_turn_counterclockwise(v); // turn counterclockwise
             break;
         case 'K':
             M5.Lcd.println("Stop");
