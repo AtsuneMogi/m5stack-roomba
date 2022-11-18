@@ -20,12 +20,12 @@ unsigned int hex_convert_to16(int a, int b){
 }
 
 
-unsigned int hex_convert_to8_high(int a){
-    return (unsigned int)(a >> 8)&0x00FF;
+unsigned int hex_convert_to8_high(int a) {
+    return (unsigned int)(a >> 8) & 0x00FF;
 }
 
 
-unsigned int hex_convert_to8_low(int a){
+unsigned int hex_convert_to8_low(int a) {
     return a^(hex_convert_to8_high(a) << 8);
 }
 
@@ -37,6 +37,7 @@ void roomba_send_num(int num) { // devide into two 8-bit commands
 
 
 void roomba_drive(int right,int left) { // go advance
+    Roomba.write(128);
     Roomba.write(byte(145));
     roomba_send_num(right);  //Velocity right 
     roomba_send_num(left);  //Velocity left 
@@ -44,7 +45,8 @@ void roomba_drive(int right,int left) { // go advance
 }
 
 
-void roomba_moter_stop(){  //モーターを止める
+void roomba_moter_stop() {
+    Roomba.write(128);
     Roomba.write(137);
     roomba_send_num(0);  //Velocity 0mm/s
     roomba_send_num(0);  //Radius
@@ -53,6 +55,7 @@ void roomba_moter_stop(){  //モーターを止める
 
 
 void roomba_drive_turn_counterclockwise(int num) {
+    Roomba.write(128);
     Roomba.write(137);
     roomba_send_num(num);  //Velocity 100mm/s
     roomba_send_num(1);  //Radius 1
@@ -61,6 +64,7 @@ void roomba_drive_turn_counterclockwise(int num) {
 
 
 void roomba_drive_turn_clockwise(int num) { 
+    Roomba.write(128);
     Roomba.write(137);
     roomba_send_num(num);  //Velocity 
     roomba_send_num(-1);  //Radius 
@@ -77,6 +81,10 @@ void setup() {
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, pass);
     delay(100);
+
+    M5.Lcd.setTextSize(5);
+    M5.Lcd.setCursor(10, 10);
+    M5.Lcd.println("Connecting...");
 
     Serial.print("Connecting...");
     while (WiFi.waitForConnectResult() != WL_CONNECTED) { 
@@ -96,7 +104,6 @@ void setup() {
 
 void loop() {
     M5.update();
-    M5.Lcd.setTextSize(5);
     M5.Lcd.fillScreen(BLACK);
 
     if (M5.BtnA.wasPressed() && 0 < v) { // min: 0
