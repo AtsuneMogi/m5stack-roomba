@@ -5,7 +5,7 @@
 
 
 char ssid[] = "M5StickC-Plus-Controller";
-char pass[] = "controller"; 
+char pass[] = "controller";
 // use a ring buffer to increase speed and reduce memory allocation
 char buf[1]; 
 AsyncUDP udp; // generate udp instance
@@ -37,7 +37,6 @@ void roomba_send_num(int num) { // devide into two 8-bit commands
 
 
 void roomba_drive(int right,int left) { // go advance
-    Roomba.write(128);
     Roomba.write(byte(145));
     roomba_send_num(right);  //Velocity right 
     roomba_send_num(left);  //Velocity left 
@@ -46,7 +45,6 @@ void roomba_drive(int right,int left) { // go advance
 
 
 void roomba_moter_stop() {
-    Roomba.write(128);
     Roomba.write(137);
     roomba_send_num(0);  //Velocity 0mm/s
     roomba_send_num(0);  //Radius
@@ -55,7 +53,6 @@ void roomba_moter_stop() {
 
 
 void roomba_drive_turn_counterclockwise(int num) {
-    Roomba.write(128);
     Roomba.write(137);
     roomba_send_num(num);  //Velocity 100mm/s
     roomba_send_num(1);  //Radius 1
@@ -63,8 +60,7 @@ void roomba_drive_turn_counterclockwise(int num) {
 };
 
 
-void roomba_drive_turn_clockwise(int num) { 
-    Roomba.write(128);
+void roomba_drive_turn_clockwise(int num) {
     Roomba.write(137);
     roomba_send_num(num);  //Velocity 
     roomba_send_num(-1);  //Radius 
@@ -77,6 +73,7 @@ void setup() {
     Serial.begin(9600);
 
     M5.begin();
+    M5.Power.begin();
 
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, pass);
@@ -92,7 +89,10 @@ void setup() {
         delay(500);
     }
     Serial.println("");
- 
+    
+    Roomba.write(128);
+    Roomba.write(132);
+
     if (udp.listen(port)) {
         udp.onPacket([](AsyncUDPPacket packet) {
             buf[0]= (char)*(packet.data());
@@ -108,6 +108,13 @@ void loop() {
 
     if (M5.BtnA.wasPressed() && 0 < v) { // min: 0
         v -= 50;
+    } else if (M5.BtnB.wasPressed()) {
+        Roomba.write(128);
+        Roomba.write(133);
+        Roomba.write(128);
+        Roomba.write(173);
+        delay(200);
+        M5.Power.powerOFF();
     } else if (M5.BtnC.wasPressed() && v < 250) { // max: 250
         v += 50;
     } 
@@ -117,39 +124,88 @@ void loop() {
     M5.Lcd.setCursor(10, 70);
 
     switch (buf[0]) {
-        case 'A':
+        case 'a':
             M5.Lcd.println("Forward");
             roomba_drive(v, v); //go advance
             break;
-        case 'B':
+        case 'A':
+            M5.Lcd.println("Forward");
+            roomba_drive(2*v, 2*v); //go advance
+            break;
+        case 'b':
             M5.Lcd.println("Back");
             roomba_drive(-v, -v); //go back
             break;
-        case 'C':
+        case 'B':
+            M5.Lcd.println("Back");
+            roomba_drive(-2*v, -2*v); //go back
+            break;
+        case 'c':
             M5.Lcd.println("Left Forward");
             roomba_drive(v, v/5);
             break;
-        case 'D':
+        case 'C':
+            M5.Lcd.println("Left Forward");
+            roomba_drive(2*v, 2*v/5);
+            break;
+        case 'd':
             M5.Lcd.println("Right Forward");
             roomba_drive(v/5, v);
             break;
-        case 'E':
+        case 'D':
+            M5.Lcd.println("Right Forward");
+            roomba_drive(2*v/5, 2*v);
+            break;
+        case 'e':
             M5.Lcd.println("Left Back");
             roomba_drive(-v, -v/5);
             break;
-        case 'F':
+        case 'E':
+            M5.Lcd.println("Left Back");
+            roomba_drive(-2*v, -2*v/5);
+            break;
+        case 'f':
             M5.Lcd.println("Right Back");
             roomba_drive(-v/5, -v);
             break;
-        case 'G':
+        case 'F':
+            M5.Lcd.println("Right Back");
+            roomba_drive(-2*v/5, -2*v);
+            break;
+        case 'g':
             M5.Lcd.println("Counterclockwise");
             roomba_drive_turn_counterclockwise(v); // turn counterclockwise
             break;
-        case 'H':
+        case 'G':
+            M5.Lcd.println("Counterclockwise");
+            roomba_drive_turn_counterclockwise(2*v); // turn counterclockwise
+            break;
+        case 'h':
             M5.Lcd.println("Clockwise");
             roomba_drive_turn_clockwise(v); // turn clockwise
             break;
+        case 'H':
+            M5.Lcd.println("Clockwise");
+            roomba_drive_turn_clockwise(2*v); // turn clockwise
+            break;
         case 'I':
+            Roomba.write(140);
+            Roomba.write(2);
+            Roomba.write(6);
+            Roomba.write(84);
+            Roomba.write(5);
+            Roomba.write(91);
+            Roomba.write(5);
+            Roomba.write(100);
+            Roomba.write(5);
+            Roomba.write(96);
+            Roomba.write(5);
+            Roomba.write(98);
+            Roomba.write(5);
+            Roomba.write(103);
+            Roomba.write(5);
+            Roomba.write(141);
+            Roomba.write(2);
             break;
         case 'J':
             break;
@@ -160,6 +216,12 @@ void loop() {
         default:
             break;
     }
-    
+    /*
+    if (Roomba.available() > 0 ) {
+        M5.Lcd.setCursor(10, 190);
+        String str = Roomba.readString();
+        M5.Lcd.println(str);
+    }
+    */
     delay(100);
 }
