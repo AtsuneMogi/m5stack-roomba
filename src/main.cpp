@@ -7,7 +7,9 @@
 char ssid[] = "M5StickC-Plus-Controller";
 char pass[] = "controller";
 // use a ring buffer to increase speed and reduce memory allocation
-char buf[1]; 
+char buf[1];
+int music = 0; // music flag
+int brush = 0; // brush flag
 AsyncUDP udp; // generate udp instance
 unsigned int port = 8888;  // local port to listen on
 
@@ -108,6 +110,7 @@ void loop() {
 
     if (M5.BtnA.wasPressed() && 0 < v) { // min: 0
         v -= 50;
+        music = 0;
     } else if (M5.BtnB.wasPressed()) {
         Roomba.write(128);
         Roomba.write(133);
@@ -115,8 +118,143 @@ void loop() {
         Roomba.write(173);
         delay(200);
         M5.Power.powerOFF();
+        music = 0;
     } else if (M5.BtnC.wasPressed() && v < 250) { // max: 250
         v += 50;
+        music = 0;
+    } else if (v == 0 && music == 0) {
+        Roomba.write(140);
+        Roomba.write(0);
+        Roomba.write(6);
+        Roomba.write(81);
+        Roomba.write(14);
+        Roomba.write(81);
+        Roomba.write(28);
+        Roomba.write(83);
+        Roomba.write(14);
+        Roomba.write(81);
+        Roomba.write(14);
+        Roomba.write(78);
+        Roomba.write(14);
+        Roomba.write(81);
+        Roomba.write(28);
+        Roomba.write(141);
+        Roomba.write(1);
+        delay(1800);
+        Roomba.write(141);
+        Roomba.write(1);
+        delay(1800);
+        Roomba.write(140);
+        Roomba.write(1);
+        Roomba.write(6);
+        Roomba.write(74);
+        Roomba.write(14);
+        Roomba.write(74);
+        Roomba.write(14);
+        Roomba.write(74);
+        Roomba.write(14);
+        Roomba.write(76);
+        Roomba.write(14);
+        Roomba.write(78);
+        Roomba.write(42);
+        Roomba.write(74);
+        Roomba.write(14);
+        Roomba.write(141);
+        Roomba.write(1);
+        delay(1800);
+        Roomba.write(140);
+        Roomba.write(2);
+        Roomba.write(3);
+        Roomba.write(78);
+        Roomba.write(42);
+        Roomba.write(81);
+        Roomba.write(14);
+        Roomba.write(81);
+        Roomba.write(56);
+        Roomba.write(141);
+        Roomba.write(2);
+        delay(1800);
+        Roomba.write(140);
+        Roomba.write(1);
+        Roomba.write(5);
+        Roomba.write(74);
+        Roomba.write(14);
+        Roomba.write(74);
+        Roomba.write(14);
+        Roomba.write(74);
+        Roomba.write(14);
+        Roomba.write(76);
+        Roomba.write(14);
+        Roomba.write(78);
+        Roomba.write(56);
+        Roomba.write(141);
+        Roomba.write(1);
+        delay(1800);
+        Roomba.write(141);
+        Roomba.write(1);
+        delay(1800);
+        Roomba.write(140);
+        Roomba.write(2);
+        Roomba.write(6);
+        Roomba.write(76);
+        Roomba.write(14);
+        Roomba.write(76);
+        Roomba.write(14);
+        Roomba.write(76);
+        Roomba.write(14);
+        Roomba.write(74);
+        Roomba.write(14);
+        Roomba.write(76);
+        Roomba.write(28);
+        Roomba.write(78);
+        Roomba.write(28);
+        Roomba.write(141);
+        Roomba.write(2);
+        delay(1800);
+        Roomba.write(140);
+        Roomba.write(2);
+        Roomba.write(4);
+        Roomba.write(81);
+        Roomba.write(28);
+        Roomba.write(79);
+        Roomba.write(28);
+        Roomba.write(78);
+        Roomba.write(28);
+        Roomba.write(76);
+        Roomba.write(28);
+        Roomba.write(141);
+        Roomba.write(2);
+        delay(1800);
+        Roomba.write(141);
+        Roomba.write(1);
+        delay(1800);
+        Roomba.write(140);
+        Roomba.write(1);
+        Roomba.write(6);
+        Roomba.write(81);
+        Roomba.write(14);
+        Roomba.write(81);
+        Roomba.write(28);
+        Roomba.write(83);
+        Roomba.write(14);
+        Roomba.write(81);
+        Roomba.write(14);
+        Roomba.write(78);
+        Roomba.write(14);
+        Roomba.write(76);
+        Roomba.write(28);
+        Roomba.write(141);
+        Roomba.write(1);
+        delay(1800);
+        Roomba.write(140);
+        Roomba.write(2);
+        Roomba.write(1);
+        Roomba.write(74);
+        Roomba.write(60);
+        Roomba.write(141);
+        Roomba.write(2);
+        delay(1800);
+        music = 1;
     } 
 
     M5.Lcd.setCursor(10, 10);
@@ -208,6 +346,17 @@ void loop() {
             Roomba.write(2);
             break;
         case 'J':
+            if (brush == 0) {
+                Roomba.write(138);
+                Roomba.write(7);
+                brush = 1;
+                delay(1000);
+            } else if (brush == 1) {
+                Roomba.write(138);
+                Roomba.write(0);
+                brush = 0;
+                delay(1000);
+            }
             break;
         case 'K':
             M5.Lcd.println("Stop");
