@@ -124,7 +124,7 @@ void loop() {
         music = 0;
     } else if (v == 0 && music == 0) {
         Roomba.write(140);
-        Roomba.write(0);
+        Roomba.write(1);
         Roomba.write(6);
         Roomba.write(81);
         Roomba.write(14);
@@ -163,7 +163,7 @@ void loop() {
         Roomba.write(1);
         delay(1800);
         Roomba.write(140);
-        Roomba.write(2);
+        Roomba.write(1);
         Roomba.write(3);
         Roomba.write(78);
         Roomba.write(42);
@@ -172,7 +172,7 @@ void loop() {
         Roomba.write(81);
         Roomba.write(56);
         Roomba.write(141);
-        Roomba.write(2);
+        Roomba.write(1);
         delay(1800);
         Roomba.write(140);
         Roomba.write(1);
@@ -194,7 +194,7 @@ void loop() {
         Roomba.write(1);
         delay(1800);
         Roomba.write(140);
-        Roomba.write(2);
+        Roomba.write(1);
         Roomba.write(6);
         Roomba.write(76);
         Roomba.write(14);
@@ -209,10 +209,10 @@ void loop() {
         Roomba.write(78);
         Roomba.write(28);
         Roomba.write(141);
-        Roomba.write(2);
+        Roomba.write(1);
         delay(1800);
         Roomba.write(140);
-        Roomba.write(2);
+        Roomba.write(1);
         Roomba.write(4);
         Roomba.write(81);
         Roomba.write(28);
@@ -223,8 +223,23 @@ void loop() {
         Roomba.write(76);
         Roomba.write(28);
         Roomba.write(141);
-        Roomba.write(2);
+        Roomba.write(1);
         delay(1800);
+        Roomba.write(140);
+        Roomba.write(1);
+        Roomba.write(6);
+        Roomba.write(81);
+        Roomba.write(14);
+        Roomba.write(81);
+        Roomba.write(28);
+        Roomba.write(83);
+        Roomba.write(14);
+        Roomba.write(81);
+        Roomba.write(14);
+        Roomba.write(78);
+        Roomba.write(14);
+        Roomba.write(81);
+        Roomba.write(28);
         Roomba.write(141);
         Roomba.write(1);
         delay(1800);
@@ -247,12 +262,12 @@ void loop() {
         Roomba.write(1);
         delay(1800);
         Roomba.write(140);
-        Roomba.write(2);
+        Roomba.write(1);
         Roomba.write(1);
         Roomba.write(74);
         Roomba.write(60);
         Roomba.write(141);
-        Roomba.write(2);
+        Roomba.write(1);
         delay(1800);
         music = 1;
     } 
@@ -363,14 +378,10 @@ void loop() {
             roomba_moter_stop();
             break;
         default:
+            M5.Lcd.println("Stop");
+            roomba_moter_stop();
             break;
     }
-    /*
-    if (Roomba.available() > 0 ) {
-        M5.Lcd.setCursor(10, 190);
-        String str = Roomba.readString();
-        M5.Lcd.println(str);
-    }
-    */
+   
     delay(100);
 }
