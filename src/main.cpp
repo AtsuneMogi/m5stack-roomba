@@ -1,20 +1,22 @@
 #include <AsyncUDP.h>
 #include <M5Stack.h>
 #include <stdlib.h>
+#include <vector>
 #include <WiFi.h>
 
 
-// use a ring buffer to increase speed and reduce memory allocation
-char buf[1];
+char buf[1]; // direction command
 int brush = 0; // brush flag
 int music = 0; // music flag
-char ssid[] = "M5StickC-Plus-Controller";
-char pass[] = "controller";
-AsyncUDP udp; // generate udp instance
-unsigned int port = 8888;  // local port to listen on
-
 HardwareSerial roomba(2); // m5stack to roomba, rx:16, tx:17
 int v = 100; // velocity
+// super mario
+std::vector<int> oneUp = {140, 2, 6, 84, 5, 91, 5, 100, 5, 96, 5, 98, 5, 103, 5, 141, 2};
+
+char ssid[] = "M5StickC-Plus-Controller";
+char pass[] = "controller";
+AsyncUDP udp; // udp instance
+unsigned int port = 8888;  // local port to listen on
 
 // devide integer to 8 bits
 unsigned int hex_convert_to16(int a, int b) {
@@ -40,34 +42,63 @@ void roomba_send_num(int num) { // devide into two 8-bit commands
 
 void roomba_drive(int right,int left) { // go advance
     roomba.write(byte(145));
-    roomba_send_num(right);  //Velocity right 
-    roomba_send_num(left);  //Velocity left 
+    roomba_send_num(right);  // velocity right 
+    roomba_send_num(left);  // velocity left 
     delay(100);
 }
 
 
 void roomba_moter_stop() {
     roomba.write(137);
-    roomba_send_num(0);  //Velocity 0mm/s
-    roomba_send_num(0);  //Radius
+    roomba_send_num(0);  // velocity 0mm/s
+    roomba_send_num(0);  // radius
     delay(100);
 };
 
 
 void roomba_drive_turn_counterclockwise(int num) {
     roomba.write(137);
-    roomba_send_num(num);  //Velocity 100mm/s
-    roomba_send_num(1);  //Radius 1
+    roomba_send_num(num);  // velocity 100mm/s
+    roomba_send_num(1);  // radius
     delay(100);
 };
 
 
 void roomba_drive_turn_clockwise(int num) {
     roomba.write(137);
-    roomba_send_num(num);  //Velocity 
-    roomba_send_num(-1);  //Radius 
+    roomba_send_num(num);  // velocity 
+    roomba_send_num(-1);  // radius 
     delay(100);
 };
+
+
+void send_data(std::vector<int>& arr) {
+    for (int i = 0; i < arr.size(); i++) {
+        roomba.write(arr[i]);
+    }
+}
+
+
+void yobikomi() {
+    std::vector<std::vector<int>> arr2 = {
+        {140, 1, 6, 81, 14, 81, 28, 83, 14, 81, 14, 78, 14, 81, 28, 141, 1},
+        {141, 1},
+        {140, 1, 6, 74, 14, 74, 14, 74, 14, 76, 14, 78, 42, 74, 14, 141, 1},
+        {140, 1, 3, 78, 42, 81, 14, 81, 56, 141, 1},
+        {140, 1, 5, 74, 14, 74, 14, 74, 14, 76, 14, 78, 56, 141, 1},
+        {141, 1},
+        {140, 1, 6, 76, 14, 76, 14, 76, 14, 74, 14, 76, 28, 78, 28, 141, 1},
+        {140, 1, 4, 81, 28, 79, 28, 78, 28, 76, 28, 141, 1},
+        {140, 1, 6, 81, 14, 81, 28, 83, 14, 81, 14, 78, 14, 81, 28, 141, 1},
+        {140, 1, 6, 81, 14, 81, 28, 83, 14, 81, 14, 78, 14, 76, 28, 141, 1},
+        {140, 1, 1, 74, 60, 141, 1}
+    };
+    for (int i = 0; i < arr2.size(); i++) {
+        std::vector<int> arr1 = arr2[i];
+        send_data(arr1);
+        delay(1800);
+    }
+}
 
 
 void setup() {
@@ -125,153 +156,8 @@ void loop() {
     } else if (v == 0 && music == 0) {
         M5.Lcd.setCursor(10, 70);
         M5.Lcd.println("Yobikomi");
-
-        roomba.write(140);
-        roomba.write(1);
-        roomba.write(6);
-        roomba.write(81);
-        roomba.write(14);
-        roomba.write(81);
-        roomba.write(28);
-        roomba.write(83);
-        roomba.write(14);
-        roomba.write(81);
-        roomba.write(14);
-        roomba.write(78);
-        roomba.write(14);
-        roomba.write(81);
-        roomba.write(28);
-        roomba.write(141);
-        roomba.write(1);
-        delay(1800);
-        roomba.write(141);
-        roomba.write(1);
-        delay(1800);
-        roomba.write(140);
-        roomba.write(1);
-        roomba.write(6);
-        roomba.write(74);
-        roomba.write(14);
-        roomba.write(74);
-        roomba.write(14);
-        roomba.write(74);
-        roomba.write(14);
-        roomba.write(76);
-        roomba.write(14);
-        roomba.write(78);
-        roomba.write(42);
-        roomba.write(74);
-        roomba.write(14);
-        roomba.write(141);
-        roomba.write(1);
-        delay(1800);
-        roomba.write(140);
-        roomba.write(1);
-        roomba.write(3);
-        roomba.write(78);
-        roomba.write(42);
-        roomba.write(81);
-        roomba.write(14);
-        roomba.write(81);
-        roomba.write(56);
-        roomba.write(141);
-        roomba.write(1);
-        delay(1800);
-        roomba.write(140);
-        roomba.write(1);
-        roomba.write(5);
-        roomba.write(74);
-        roomba.write(14);
-        roomba.write(74);
-        roomba.write(14);
-        roomba.write(74);
-        roomba.write(14);
-        roomba.write(76);
-        roomba.write(14);
-        roomba.write(78);
-        roomba.write(56);
-        roomba.write(141);
-        roomba.write(1);
-        delay(1800);
-        roomba.write(141);
-        roomba.write(1);
-        delay(1800);
-        roomba.write(140);
-        roomba.write(1);
-        roomba.write(6);
-        roomba.write(76);
-        roomba.write(14);
-        roomba.write(76);
-        roomba.write(14);
-        roomba.write(76);
-        roomba.write(14);
-        roomba.write(74);
-        roomba.write(14);
-        roomba.write(76);
-        roomba.write(28);
-        roomba.write(78);
-        roomba.write(28);
-        roomba.write(141);
-        roomba.write(1);
-        delay(1800);
-        roomba.write(140);
-        roomba.write(1);
-        roomba.write(4);
-        roomba.write(81);
-        roomba.write(28);
-        roomba.write(79);
-        roomba.write(28);
-        roomba.write(78);
-        roomba.write(28);
-        roomba.write(76);
-        roomba.write(28);
-        roomba.write(141);
-        roomba.write(1);
-        delay(1800);
-        roomba.write(140);
-        roomba.write(1);
-        roomba.write(6);
-        roomba.write(81);
-        roomba.write(14);
-        roomba.write(81);
-        roomba.write(28);
-        roomba.write(83);
-        roomba.write(14);
-        roomba.write(81);
-        roomba.write(14);
-        roomba.write(78);
-        roomba.write(14);
-        roomba.write(81);
-        roomba.write(28);
-        roomba.write(141);
-        roomba.write(1);
-        delay(1800);
-        roomba.write(140);
-        roomba.write(1);
-        roomba.write(6);
-        roomba.write(81);
-        roomba.write(14);
-        roomba.write(81);
-        roomba.write(28);
-        roomba.write(83);
-        roomba.write(14);
-        roomba.write(81);
-        roomba.write(14);
-        roomba.write(78);
-        roomba.write(14);
-        roomba.write(76);
-        roomba.write(28);
-        roomba.write(141);
-        roomba.write(1);
-        delay(1800);
-        roomba.write(140);
-        roomba.write(1);
-        roomba.write(1);
-        roomba.write(74);
-        roomba.write(60);
-        roomba.write(141);
-        roomba.write(1);
-        delay(1800);
+        delay(100);
+        yobikomi();
         music = 1;
     } 
 
@@ -345,23 +231,7 @@ void loop() {
             roomba_drive_turn_clockwise(2*v); // turn clockwise
             break;
         case 'I':
-            roomba.write(140);
-            roomba.write(2);
-            roomba.write(6);
-            roomba.write(84);
-            roomba.write(5);
-            roomba.write(91);
-            roomba.write(5);
-            roomba.write(100);
-            roomba.write(5);
-            roomba.write(96);
-            roomba.write(5);
-            roomba.write(98);
-            roomba.write(5);
-            roomba.write(103);
-            roomba.write(5);
-            roomba.write(141);
-            roomba.write(2);
+            send_data(oneUp);
             break;
         case 'J':
             if (brush == 0) {
@@ -385,6 +255,5 @@ void loop() {
             roomba_moter_stop();
             break;
     }
-   
     delay(100);
 }
