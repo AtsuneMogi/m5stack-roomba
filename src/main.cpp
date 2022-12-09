@@ -4,12 +4,14 @@
 #include <vector>
 #include <WiFi.h>
 
-#define censorF 3
+#define censorF 21
+#define censorB 22
+
 
 char buf[1]; // direction command
 bool brush = false; // brush flag
 bool music; // music flag
-HardwareSerial roomba(2); // m5stack to roomba, rx:16, tx:17
+HardwareSerial roomba(2); // esp32 to roomba, rx:16, tx:17
 int v = 100; // velocity
 // super mario
 std::vector<int> oneUp = {140, 2, 6, 84, 5, 91, 5, 100, 5, 96, 5, 98, 5, 103, 5, 141, 2};
@@ -104,8 +106,9 @@ void yobikomi() {
 
 void setup() {
     pinMode(censorF, INPUT);
+    pinMode(censorB, INPUT);
 
-    roomba.begin(115200); // default 115200bps
+    roomba.begin(115200);
     Serial.begin(9600);
 
     M5.begin();
@@ -134,6 +137,9 @@ void setup() {
             buf[0]= (char)*(packet.data());
             Serial.println(buf[0]);
         });
+    } else {
+        stop();
+        Serial.println("No Packet");
     }
 }
 
@@ -188,59 +194,109 @@ void loop() {
             }
             break;
         case 'b':
-            M5.Lcd.println("Back");
-            roomba_drive(-v, -v); //go back
+            if (!digitalRead(censorB)) {
+                M5.Lcd.println("Stop");
+                stop();
+            } else {
+                M5.Lcd.println("Back");
+                roomba_drive(-v, -v);
+            }
             break;
         case 'B':
-            M5.Lcd.println("Back");
-            roomba_drive(-2*v, -2*v); //go back
+            if (!digitalRead(censorB)) {
+                M5.Lcd.println("Stop");
+                stop();
+            } else {
+                M5.Lcd.println("Back");
+                roomba_drive(-2*v, -2*v);
+            }
             break;
         case 'c':
-            M5.Lcd.println("Left Forward");
-            roomba_drive(v, v/5);
+            if (!digitalRead(censorF)) {
+                M5.Lcd.println("Stop");
+                stop();
+            } else {
+                M5.Lcd.println("Left Forward");
+                roomba_drive(v, v/5);
+            }
             break;
         case 'C':
-            M5.Lcd.println("Left Forward");
-            roomba_drive(2*v, 2*v/5);
+            if (!digitalRead(censorF)) {
+                M5.Lcd.println("Stop");
+                stop();
+            } else {
+                M5.Lcd.println("Left Forward");
+                roomba_drive(2*v, 2*v/5);
+            }
             break;
         case 'd':
-            M5.Lcd.println("Right Forward");
-            roomba_drive(v/5, v);
+            if (!digitalRead(censorF)) {
+                M5.Lcd.println("Stop");
+                stop();
+            } else {
+                M5.Lcd.println("Right Forward");
+                roomba_drive(v/5, v);
+            }
             break;
         case 'D':
-            M5.Lcd.println("Right Forward");
-            roomba_drive(2*v/5, 2*v);
+            if (!digitalRead(censorF)) {
+                M5.Lcd.println("Stop");
+                stop();
+            } else {
+                M5.Lcd.println("Right Forward");
+                roomba_drive(2*v/5, 2*v);
+            }
             break;
         case 'e':
-            M5.Lcd.println("Left Back");
-            roomba_drive(-v, -v/5);
+            if (!digitalRead(censorB)) {
+                M5.Lcd.println("Stop");
+                stop();
+            } else {
+                M5.Lcd.println("Left Back");
+                roomba_drive(-v, -v/5);
+            }
             break;
         case 'E':
-            M5.Lcd.println("Left Back");
-            roomba_drive(-2*v, -2*v/5);
+            if (!digitalRead(censorB)) {
+                M5.Lcd.println("Stop");
+                stop();
+            } else {
+                M5.Lcd.println("Left Back");
+                roomba_drive(-2*v, -2*v/5);
+            }
             break;
         case 'f':
-            M5.Lcd.println("Right Back");
-            roomba_drive(-v/5, -v);
+            if (!digitalRead(censorB)) {
+                M5.Lcd.println("Stop");
+                stop();
+            } else {
+                M5.Lcd.println("Right Back");
+                roomba_drive(-v/5, -v);
+            }
             break;
         case 'F':
-            M5.Lcd.println("Right Back");
-            roomba_drive(-2*v/5, -2*v);
+            if (!digitalRead(censorB)) {
+                M5.Lcd.println("Stop");
+                stop();
+            } else {
+                M5.Lcd.println("Right Back");
+                roomba_drive(-2*v/5, -2*v);
+            }
             break;
         case 'g':
-            M5.Lcd.println("Counterclockwise");
+            M5.Lcd.println("Left Turn");
             roomba_drive_turn_counterclockwise(v); // turn counterclockwise
             break;
         case 'G':
-            M5.Lcd.println("Counterclockwise");
+            M5.Lcd.println("Left Turn");
             roomba_drive_turn_counterclockwise(2*v); // turn counterclockwise
             break;
         case 'h':
-            M5.Lcd.println("Clockwise");
+            M5.Lcd.println("Right Turn");
             roomba_drive_turn_clockwise(v); // turn clockwise
             break;
         case 'H':
-            M5.Lcd.println("Clockwise");
+            M5.Lcd.println("Right Turn");
             roomba_drive_turn_clockwise(2*v); // turn clockwise
             break;
         case 'I':
