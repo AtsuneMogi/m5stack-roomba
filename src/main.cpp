@@ -4,10 +4,11 @@
 #include <vector>
 #include <WiFi.h>
 
+#define censorF 3
 
 char buf[1]; // direction command
-int brush = 0; // brush flag
-int music = 0; // music flag
+bool brush = false; // brush flag
+bool music; // music flag
 HardwareSerial roomba(2); // m5stack to roomba, rx:16, tx:17
 int v = 100; // velocity
 // super mario
@@ -48,7 +49,7 @@ void roomba_drive(int right,int left) { // go advance
 }
 
 
-void roomba_moter_stop() {
+void stop() {
     roomba.write(137);
     roomba_send_num(0);  // velocity 0mm/s
     roomba_send_num(0);  // radius
@@ -102,6 +103,8 @@ void yobikomi() {
 
 
 void setup() {
+    pinMode(censorF, INPUT);
+
     roomba.begin(115200); // default 115200bps
     Serial.begin(9600);
 
@@ -141,7 +144,7 @@ void loop() {
 
     if (M5.BtnA.wasPressed() && 0 < v) { // min: 0
         v -= 50;
-        music = 0;
+        music = false;
     } else if (M5.BtnB.wasPressed()) {
         roomba.write(128);
         roomba.write(133);
@@ -149,16 +152,16 @@ void loop() {
         roomba.write(173);
         delay(200);
         M5.Power.powerOFF();
-        music = 0;
+        music = false;
     } else if (M5.BtnC.wasPressed() && v < 250) { // max: 250
         v += 50;
-        music = 0;
-    } else if (v == 0 && music == 0) {
+        music = false;
+    } else if (v == 0 && music == false) {
         M5.Lcd.setCursor(10, 70);
         M5.Lcd.println("Yobikomi");
         delay(100);
         yobikomi();
-        music = 1;
+        music = true;
     } 
 
     M5.Lcd.setCursor(10, 10);
@@ -167,12 +170,22 @@ void loop() {
 
     switch (buf[0]) {
         case 'a':
-            M5.Lcd.println("Forward");
-            roomba_drive(v, v); //go advance
+            if (!digitalRead(censorF)) {
+                M5.Lcd.println("Stop");
+                stop();
+            } else {
+                M5.Lcd.println("Forward");
+                roomba_drive(v, v); //go advance
+            }
             break;
         case 'A':
-            M5.Lcd.println("Forward");
-            roomba_drive(2*v, 2*v); //go advance
+            if (!digitalRead(censorF)) {
+                M5.Lcd.println("Stop");
+                stop();
+            } else {
+                M5.Lcd.println("Forward");
+                roomba_drive(2*v, 2*v); //go advance
+            }
             break;
         case 'b':
             M5.Lcd.println("Back");
@@ -234,25 +247,25 @@ void loop() {
             send_data(oneUp);
             break;
         case 'J':
-            if (brush == 0) {
+            if (!brush) {
                 roomba.write(138);
                 roomba.write(7);
-                brush = 1;
+                brush = true;
                 delay(1000);
-            } else if (brush == 1) {
+            } else if (brush) {
                 roomba.write(138);
                 roomba.write(0);
-                brush = 0;
+                brush = false;
                 delay(1000);
             }
             break;
         case 'K':
             M5.Lcd.println("Stop");
-            roomba_moter_stop();
+            stop();
             break;
         default:
             M5.Lcd.println("Stop");
-            roomba_moter_stop();
+            stop();
             break;
     }
     delay(100);
