@@ -6,10 +6,10 @@
 
 #define sensorF 21
 #define sensorB 22
-#define sensorFR 25
-#define sensorFL 26
-#define sensorBR 35
-#define sensorBL 36
+#define sensorFR 18
+#define sensorFL 19
+//#define sensorBR 35
+//#define sensorBL 36
 
 
 char buf[1]; // direction command
@@ -112,12 +112,12 @@ void setup() {
     pinMode(sensorF, INPUT);
     pinMode(sensorB, INPUT);
     pinMode(sensorFR, INPUT);
-    pinMode(sensorBR, INPUT);
     pinMode(sensorFL, INPUT);
-    pinMode(sensorBL, INPUT);
+    //pinMode(sensorBR, INPUT);
+    //pinMode(sensorBL, INPUT);
 
     roomba.begin(115200);
-    Serial.begin(9600);
+    Serial.begin(115200);
 
     M5.begin();
     M5.Power.begin();
@@ -193,7 +193,7 @@ void loop() {
             }
             break;
         case 'A':
-            if (!digitalRead(sensorF) + !digitalRead(sensorFR) + !digitalRead(sensorFL)) {
+            if (!digitalRead(sensorF)/* + !digitalRead(sensorFR) + !digitalRead(sensorFL)*/) {
                 M5.Lcd.println("Stop");
                 stop();
             } else {
@@ -220,7 +220,7 @@ void loop() {
             }
             break;
         case 'c':
-            if (!digitalRead(sensorF) + !digitalRead(sensorFL)) {
+            if (!digitalRead(sensorF)/* + !digitalRead(sensorFL)*/) {
                 M5.Lcd.println("Stop");
                 stop();
             } else {
@@ -229,7 +229,7 @@ void loop() {
             }
             break;
         case 'C':
-            if (!digitalRead(sensorF) + !digitalRead(sensorFL)) {
+            if (!digitalRead(sensorF)/* + !digitalRead(sensorFL)*/) {
                 M5.Lcd.println("Stop");
                 stop();
             } else {
@@ -238,7 +238,7 @@ void loop() {
             }
             break;
         case 'd':
-            if (!digitalRead(sensorF) + !digitalRead(sensorFR)) {
+            if (!digitalRead(sensorF)/* + !digitalRead(sensorFR)*/) {
                 M5.Lcd.println("Stop");
                 stop();
             } else {
@@ -247,7 +247,7 @@ void loop() {
             }
             break;
         case 'D':
-            if (!digitalRead(sensorF) + !digitalRead(sensorFR)) {
+            if (!digitalRead(sensorF)/* + !digitalRead(sensorFR)*/) {
                 M5.Lcd.println("Stop");
                 stop();
             } else {
