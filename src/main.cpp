@@ -4,8 +4,12 @@
 #include <vector>
 #include <WiFi.h>
 
-#define censorF 21
-#define censorB 22
+#define sensorF 21
+#define sensorB 22
+#define sensorFR 25
+#define sensorFL 26
+#define sensorBR 35
+#define sensorBL 36
 
 
 char buf[1]; // direction command
@@ -105,8 +109,12 @@ void yobikomi() {
 
 
 void setup() {
-    pinMode(censorF, INPUT);
-    pinMode(censorB, INPUT);
+    pinMode(sensorF, INPUT);
+    pinMode(sensorB, INPUT);
+    pinMode(sensorFR, INPUT);
+    pinMode(sensorBR, INPUT);
+    pinMode(sensorFL, INPUT);
+    pinMode(sensorBL, INPUT);
 
     roomba.begin(115200);
     Serial.begin(9600);
@@ -176,7 +184,7 @@ void loop() {
 
     switch (buf[0]) {
         case 'a':
-            if (!digitalRead(censorF)) {
+            if (!digitalRead(sensorF) + !digitalRead(sensorFR) + !digitalRead(sensorFL)) {
                 M5.Lcd.println("Stop");
                 stop();
             } else {
@@ -185,7 +193,7 @@ void loop() {
             }
             break;
         case 'A':
-            if (!digitalRead(censorF)) {
+            if (!digitalRead(sensorF) + !digitalRead(sensorFR) + !digitalRead(sensorFL)) {
                 M5.Lcd.println("Stop");
                 stop();
             } else {
@@ -194,7 +202,7 @@ void loop() {
             }
             break;
         case 'b':
-            if (!digitalRead(censorB)) {
+            if (!digitalRead(sensorB)) {
                 M5.Lcd.println("Stop");
                 stop();
             } else {
@@ -203,7 +211,7 @@ void loop() {
             }
             break;
         case 'B':
-            if (!digitalRead(censorB)) {
+            if (!digitalRead(sensorB)) {
                 M5.Lcd.println("Stop");
                 stop();
             } else {
@@ -212,7 +220,7 @@ void loop() {
             }
             break;
         case 'c':
-            if (!digitalRead(censorF)) {
+            if (!digitalRead(sensorF) + !digitalRead(sensorFL)) {
                 M5.Lcd.println("Stop");
                 stop();
             } else {
@@ -221,7 +229,7 @@ void loop() {
             }
             break;
         case 'C':
-            if (!digitalRead(censorF)) {
+            if (!digitalRead(sensorF) + !digitalRead(sensorFL)) {
                 M5.Lcd.println("Stop");
                 stop();
             } else {
@@ -230,7 +238,7 @@ void loop() {
             }
             break;
         case 'd':
-            if (!digitalRead(censorF)) {
+            if (!digitalRead(sensorF) + !digitalRead(sensorFR)) {
                 M5.Lcd.println("Stop");
                 stop();
             } else {
@@ -239,7 +247,7 @@ void loop() {
             }
             break;
         case 'D':
-            if (!digitalRead(censorF)) {
+            if (!digitalRead(sensorF) + !digitalRead(sensorFR)) {
                 M5.Lcd.println("Stop");
                 stop();
             } else {
@@ -248,7 +256,7 @@ void loop() {
             }
             break;
         case 'e':
-            if (!digitalRead(censorB)) {
+            if (!digitalRead(sensorB)) {
                 M5.Lcd.println("Stop");
                 stop();
             } else {
@@ -257,7 +265,7 @@ void loop() {
             }
             break;
         case 'E':
-            if (!digitalRead(censorB)) {
+            if (!digitalRead(sensorB)) {
                 M5.Lcd.println("Stop");
                 stop();
             } else {
@@ -266,7 +274,7 @@ void loop() {
             }
             break;
         case 'f':
-            if (!digitalRead(censorB)) {
+            if (!digitalRead(sensorB)) {
                 M5.Lcd.println("Stop");
                 stop();
             } else {
@@ -275,7 +283,7 @@ void loop() {
             }
             break;
         case 'F':
-            if (!digitalRead(censorB)) {
+            if (!digitalRead(sensorB)) {
                 M5.Lcd.println("Stop");
                 stop();
             } else {
